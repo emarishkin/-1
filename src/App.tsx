@@ -1,11 +1,10 @@
-import { TodoList } from "./components/TodoList"
-
+import { ContactManager } from "./pages/ContactManager"
 
 function App() {
 
   return (
     <>
-      <TodoList />
+      <ContactManager />
     </>
   )
 }
