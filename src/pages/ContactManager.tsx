@@ -4,6 +4,11 @@ import { ContactCard } from "../components/ContactCard";
 
 export const ContactManager:FC = () => {
     
+    const [search,setSearch] = useState<string>('')
+    const [filterList,setFilterList] = useState<Contact[] | null>(null)
+
+    const [selectedCity,setSelectedCity] = useState<string>('all')
+
     const [contacts,setContacts] = useState<Contact[]>([])
     const [addContact,setAddContact] = useState({
         name:'',
@@ -12,7 +17,13 @@ export const ContactManager:FC = () => {
     })
 
     const handleChange = (e:ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        setAddContact({...addContact,[e.target.name]:e.target.value})
+       const {name,value} = e.target
+       if(name === 'search'){
+        setSearch(value)
+       } else {
+        setAddContact({...addContact,[name]:value})
+       }
+
     }
 
     const handleSubmit = (e:FormEvent) => {
@@ -24,17 +35,79 @@ export const ContactManager:FC = () => {
             email:addContact.email,
             city:addContact.city
         }
-
         setContacts([...contacts,newContact])
-        setAddContact({...addContact})
+        setAddContact({name:'',email:'',city:''})
     }
 
     const deleteContact = (id:number) => {
         setContacts(contacts.filter(item=>item.id!==id))
     }
 
+    const applyFilters = () => {
+        let filtred = [...contacts]
+
+        if(search.trim()){
+            filtred = filtred.filter(item => item.name.toLowerCase().includes(search.toLowerCase()))
+        }
+        if(selectedCity !== 'all'){
+            filtred = filtred.filter(item=> item.city === selectedCity)
+        }
+        setFilterList(filtred?filtred:null)
+    }
+
+     const resetFilters = () => {
+        setFilterList(null);
+        setSearch('');
+        setSelectedCity('all');
+    };
+
+    const getUniqueCities = () => {
+        const cities = contacts.map(item => item.city)
+        return ['all',...new Set(cities)]
+    }
+
+    const displayContacts = filterList || contacts
+
     return (
         <div>
+            
+            <div>
+                <label>Поиск по имени:</label>
+                <input
+                name="search"
+                type="text"
+                value={search}
+                onChange={handleChange}
+                required
+                />
+                <button onClick={applyFilters}>Найти</button>
+
+                <div>
+                    {(filterList || selectedCity !== 'all') && (
+                        <div>
+                            <button type="button" onClick={()=>resetFilters()}>Сбросить</button>
+                        </div>
+                    )}
+                </div>
+
+            </div>
+
+            <div>
+                <label>Фильтр по городу:</label>
+                <select
+                name="cityFilter"
+                value={selectedCity}
+                onChange={(e) => setSelectedCity(e.target.value)}
+                >
+                {getUniqueCities().map(city=>(
+                    <option value={city}>
+                        {city === 'all'?'все города':city}
+                    </option>
+                ))}
+                </select>
+            </div>
+
+
             <form onSubmit={handleSubmit}>
                 <h2>Добавление нового контакта</h2>
                 
@@ -76,12 +149,15 @@ export const ContactManager:FC = () => {
             </form>
 
             <div>
-                {contacts.length===0?(
-                    <p>Контактов пока нет</p>
+                <h2>{filterList?'Результаты поиска':'список контактов'}</h2>
+                {displayContacts.length === 0?(
+                    <p>Нет контактов</p>
                 ):(
-                    contacts.map(item=>(
-                        <ContactCard contact={item} OnDel={()=>deleteContact(item.id)} />
-                    ))
+                    <div>
+                        {displayContacts.map(item=>(
+                            <ContactCard contact={item} OnDel={()=>deleteContact(item.id)} />
+                        ))}
+                    </div>
                 )}
             </div>
 
