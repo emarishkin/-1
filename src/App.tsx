@@ -1,10 +1,11 @@
-import { ContactManager } from "./pages/ContactManager"
+import { BookManager } from "./pages/BookManager"
+
 
 function App() {
 
   return (
     <>
-      <ContactManager />
+     <BookManager />
     </>
   )
 }

@@ -1,6 +1,7 @@
-export type Contact = {
+export type IBook = {
   id: number;
-  name: string;
-  email: string;
-  city: string;
+  title: string;
+  author: string;
+  genre: string;
+  read: boolean;
 };
