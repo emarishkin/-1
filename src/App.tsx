@@ -1,11 +1,12 @@
-import { BookManager } from "./pages/BookManager"
+import { BookPage } from "./pages/BookPage"
+
 
 
 function App() {
 
   return (
     <>
-     <BookManager />
+       <BookPage />
     </>
   )
 }

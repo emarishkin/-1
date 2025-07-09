@@ -1,22 +1,21 @@
 import type { FC } from "react";
-import type { IBook } from "../type/Contact";
+import type { IBook } from "../type/Book";
+import "../styles/BookCard.css";
 
-interface BookCardProps{
-    book:IBook
-    onChange:()=>void
-    OnDelete:()=>void
+interface BookCardProps {
+    book: IBook
+    onDelete: () => void
+    onToggle: () => void
 }
 
-export const BookCard:FC<BookCardProps> = ({book,onChange,OnDelete}) => {
+export const BookCard: FC<BookCardProps> = ({ book, onDelete, onToggle }) => {
     return (
-        <div>
-            <div>
-                <h3>{book.title}</h3>
-                <h3>{book.author}</h3>
-            </div>
-            <p>{book.genre}</p>
-            <button onClick={onChange}>{book.read ? 'Книга прочитана':'Книга не прочитана'}</button>
-            <button onClick={OnDelete}>Удалить</button>
+        <div className="book-card">
+           <h2>{book.title}</h2>
+           <h2>{book.author}</h2>
+           <h2>{book.genre}</h2>
+           <button onClick={onToggle}>{book.read ? 'Книга прочитана' : 'Книга не прочитана'}</button>
+           <button onClick={onDelete}>Удалить книгу</button>
         </div>
     )
 }
